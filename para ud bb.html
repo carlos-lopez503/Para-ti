@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carta de Amor</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ffcce6, #ffb3d9);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .scene {
+            position: relative;
+            width: 320px;
+            height: 420px;
+            perspective: 1000px;
+        }
+
+        .envelope {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: all 0.8s ease;
+            cursor: pointer;
+        }
+
+        .envelope.open {
+            transform: translateY(-50px);
+        }
+
+        .envelope__front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #ff4d4d;
+            border-radius: 8px;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 25px rgba(255, 0, 0, 0.3);
+            transition: all 0.8s ease;
+            transform-origin: bottom;
+            padding-bottom: 30px;
+        }
+
+        .envelope.open .envelope__front {
+            transform: rotateX(180deg);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.2);
+        }
+
+        .envelope__front::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-top: 100px solid #ff1a1a;
+            transform-origin: top;
+            transition: all 0.8s ease;
+        }
+
+        .envelope.open .envelope__front::before {
+            transform: rotateX(180deg);
+        }
+
+        .envelope__back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #ff6666;
+            border-radius: 8px;
+            z-index: 1;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .invitation-text {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+            font-size: 18px;
+            padding: 0 20px;
+            transition: all 0.5s ease;
+            opacity: 1;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .envelope.open .invitation-text {
+            opacity: 0;
+        }
+
+        .heart-pulse {
+            font-size: 60px;
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .letter {
+            position: absolute;
+            width: 90%;
+            height: 380px;
+            background: white;
+            border-radius: 5px;
+            padding: 20px;
+            box-sizing: border-box;
+            top: 10px;
+            left: 5%;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease 0.4s;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .envelope.open .letter {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .letter__content {
+            font-family: 'Georgia', 'Times New Roman', Times, serif;
+            font-size: 18px;
+            color: #333;
+            line-height: 1.6;
+            text-align: center;
+            white-space: pre-line;
+        }
+
+        /* Efectos visuales mejorados */
+        .magic-particle {
+            position: absolute;
+            pointer-events: none;
+            font-size: 24px;
+            animation: float-magic 3s ease-out forwards;
+            z-index: 10;
+            opacity: 0;
+            transform-origin: center;
+        }
+
+        @keyframes float-magic {
+            0% {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .touch-hint {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="scene">
+        <div class="envelope" id="envelope">
+            <div class="envelope__front">
+                <div class="heart-pulse">❤️</div>
+                <div class="invitation-text">Haz clic aquí para abrir<br>el mensaje de mi corazón</div>
+                <div class="touch-hint">¡Toca el sobre!</div>
+            </div>
+            <div class="envelope__back"></div>
+            <div class="letter">
+                <div class="letter__content">EN EL FONDO DE MI
+CORAZÓN, ENCUENTRO UN
+SUSURRO DE TU NOMBRE,
+RECORDÁNDOME LO
+AFORTUNADO QUE SOY, POR
+HABERTE CONOCIDO.
+
+Con cariño,
+Para ti</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón oculto para solucionar bloqueo de autoplay -->
+    <button onclick="audio.play()" style="display:none;" id="audioButton">Play</button>
+
+    <script>
+        const envelope = document.getElementById('envelope');
+        let isOpen = false;
+        let heartInterval;
+        let audio; // Variable para el objeto de audio
+
+        // Coordenadas del centro de la carta
+        const scene = document.querySelector('.scene');
+        const sceneRect = scene.getBoundingClientRect();
+        const centerX = sceneRect.left + sceneRect.width / 2;
+        const centerY = sceneRect.top + sceneRect.height / 2;
+
+        envelope.addEventListener('click', function() {
+            if (isOpen) return;
+            isOpen = true;
+            
+            envelope.classList.add('open');
+            startHeartRain();
+            
+            // Reproducir el audio de GitHub
+            playGitHubAudio();
+        });
+
+        function playGitHubAudio() {
+            // URL de la canción en GitHub
+            const audioUrl = "https://raw.githubusercontent.com/carlos-lopez503/musica/main/Maniako%20Te%20esperare%20Beats%20Instrumental.mp3";
+            
+            audio = new Audio(audioUrl);
+            audio.volume = 0.7; // Volumen al 70%
+            audio.loop = true;  // Repetir automáticamente
+            
+            // Intentar reproducir directamente
+            audio.play().catch(e => {
+                console.error("Error al reproducir:", e);
+                // Si falla por políticas de autoplay, usar el botón oculto
+                document.getElementById('audioButton').click();
+            });
+        }
+
+        function createHeart() {
+            const colors = ['#ff0000', '#ff69b4', '#ff1493', '#ff3366', '#ff5050'];
+            const emojis = ['❤️', '💖', '💘', '💗', '💓', '💞', '💕'];
+            
+            const heart = document.createElement('div');
+            heart.className = 'magic-particle';
+            heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+            
+            // Posicionar en el centro de la carta
+            heart.style.left = centerX + 'px';
+            heart.style.top = centerY + 'px';
+            
+            // Dirección aleatoria hacia arriba
+            const angle = (Math.random() - 0.5) * Math.PI; // -90° a +90°
+            const distance = 100 + Math.random() * 100;
+            
+            const tx = Math.sin(angle) * distance;
+            const ty = -Math.cos(angle) * distance - 50;
+            
+            heart.style.setProperty('--tx', tx + 'px');
+            heart.style.setProperty('--ty', ty + 'px');
+            
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 3000);
+        }
+
+        function startHeartRain() {
+            // Crear varios corazones inmediatamente
+            for (let i = 0; i < 10; i++) {
+                setTimeout(createHeart, i * 100);
+            }
+            
+            // Luego crear corazones cada 200ms
+            heartInterval = setInterval(createHeart, 200);
+        }
+    </script>
+</body>
+</html>
